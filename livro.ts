@@ -8,7 +8,6 @@ interface ILivro{
     estoque: number,
 
     exibirInformacoes(): void,
-    atualizarEstoque(decisao: number): void
 }
 
 interface IPessoa{
@@ -107,9 +106,6 @@ class LivroFisico implements ILivro{
         console.log(`Editora: ${this.editora.nome}`);
         console.log(`Estoque: ${this.estoque}`);
     }
-    atualizarEstoque(decisao: number): void {
-        
-    }
 }
 
 class EBook implements ILivro{
@@ -144,7 +140,93 @@ class EBook implements ILivro{
         console.log(`Estoque: ${this.estoque}`);
         console.log(`Tamanho: ${this.tamanho}`)
     }
-    atualizarEstoque(decisao: number): void {
-        
+}
+
+class Livraria{
+    livrosFisicos: LivroFisico[];
+    ebooks: EBook[];
+    nome: string;
+
+    constructor(nome: string){
+        this.nome = nome;
+    }
+
+    listarLivrosFisicos(){
+        console.log(`Lista de livros físicos:`)
+        for(let i=0; i<this.livrosFisicos.length; i++){
+            console.log(`${this.livrosFisicos[i].exibirInformacoes}\n\n`)
+        }
+    }
+
+    listarEBooks(){
+        console.log(`Lista de e-books:`)
+        for(let i=0; i<this.ebooks.length; i++){
+            console.log(`${this.ebooks[i].exibirInformacoes}\n\n`)
+        }
+    }
+
+    adicionarLivroFisico(titulo: string, ano: number, isbn: string, preco: number, autor: Autor, editora: Editora, estoque: number): void{
+        this.livrosFisicos.push(new LivroFisico(titulo, ano, isbn, preco, autor, editora, estoque));
+    }
+    adicionarEBook(titulo: string, ano: number, isbn: string, preco: number, autor: Autor, editora: Editora, estoque: number, tamanho: number): void{
+        this.ebooks.push(new EBook(titulo, ano, isbn, preco, autor, editora, estoque, tamanho))
+    }
+    venderLivroFisico(nomeLivro: string): void{
+        for(let i = 0; i<this.livrosFisicos.length; i++){
+            if(this.livrosFisicos[i].estoque > 0){
+                if(this.livrosFisicos[i].titulo.toLowerCase() == nomeLivro.toLowerCase()){
+                    this.livrosFisicos[i].estoque -= 1;
+                    console.log(`O livro ${this.livrosFisicos[i].titulo} foi vendido!`);
+                }
+            }
+        }
+    }
+    venderEBook(nomeLivro: string): void{
+        for(let i = 0; i<this.ebooks.length; i++){
+            if(this.ebooks[i].estoque > 0){
+                if(this.ebooks[i].titulo.toLowerCase() == nomeLivro.toLowerCase()){
+                    this.ebooks[i].estoque -= 1;
+                    console.log(`O e-book ${this.ebooks[i].titulo} foi vendido!`);
+                }
+            }
+        }
+    }
+    excluirLivroFisico(nomeLivro: string): void{
+        for(let i = 0; i<this.livrosFisicos.length; i++){
+            if(this.livrosFisicos[i].titulo.toLowerCase() == nomeLivro.toLowerCase()){
+                this.livrosFisicos.splice(i,1);
+                console.log(`O livro ${this.livrosFisicos[i].titulo} foi excluído.`)
+            }
+        }
+    }
+    excluirEBook(nomeLivro: string): void{
+        for(let i = 0; i<this.ebooks.length; i++){
+            if(this.ebooks[i].titulo.toLowerCase() == nomeLivro.toLowerCase()){
+                this.ebooks.splice(i,1);
+                console.log(`O e-book ${this.ebooks[i].titulo} foi excluído.`)
+            }
+        }
     }
 }
+
+let companhiaDasLetras = new Editora("Companhia das Letras", "55.789.390/0001-12", "(82)99988-7766", "companhiadasletras@gmail.com");
+let editorarocco = new Editora("Editora Rocco", "42.444.703/0001-59", "(82)99988-9977","editorarocco@gmail.com");
+let jkrowling = new Autor("J. K. Rowling", 89, "875.789.234-90", "Masculino");
+let davidgoggins = new Autor("David Goggins", 50, "123.456.789-01", "Masculino");
+let isaquebarbosa = new Autor("Isaque Barbosa Alves", 33, "032.432.423-54", "Masculino")
+let harrypotter = new LivroFisico("Harry Potter", 2001, "234234234-123", 39.90, jkrowling, companhiaDasLetras, 5);
+let livroIsaque = new LivroFisico("A história da matemática", 2040, "2384938243-234", 2.99, isaquebarbosa, companhiaDasLetras, 3);
+let nadapodemeferir = new EBook("Nada pode me ferir",2018, "456456456-456", 10.90, davidgoggins, editorarocco, 2, 256);
+let livraria1 = new Livraria("Livraria da Esquina");
+
+livraria1.adicionarLivroFisico("Harry Potter", 2001, "234234234-123", 39.90, jkrowling, companhiaDasLetras, 5);
+livraria1.listarLivrosFisicos();
+livraria1.adicionarLivroFisico("A história da matemática", 2040, "2384938243-234", 2.99, isaquebarbosa, companhiaDasLetras, 3);
+livraria1.adicionarLivroFisico("A história da matemática 2", 2040, "2384938243-224", 2.99, isaquebarbosa, companhiaDasLetras, 3)
+livraria1.adicionarEBook("Nada pode me ferir",2018, "456456456-456", 10.90, davidgoggins, editorarocco, 2, 256);
+livraria1.listarLivrosFisicos();
+livraria1.listarEBooks();
+livraria1.venderLivroFisico("Harry Potter");
+livraria1.listarLivrosFisicos();
+livraria1.excluirLivroFisico("A história da matemática 2");
+livraria1.listarLivrosFisicos();
