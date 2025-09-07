@@ -28,11 +28,6 @@ interface IEditora{
     exibirEditora(): void;
 }
 
-interface IEstabelecimento{
-    nome: string,
-    
-}
-
 class Autor implements IPessoa{
     nome: string;
     idade: number;
@@ -149,61 +144,77 @@ class Livraria{
 
     constructor(nome: string){
         this.nome = nome;
+        this.livrosFisicos = [];
+        this.ebooks = [];
     }
 
-    listarLivrosFisicos(){
-        console.log(`Lista de livros físicos:`)
-        for(let i=0; i<this.livrosFisicos.length; i++){
-            console.log(`${this.livrosFisicos[i].exibirInformacoes}\n\n`)
+    listarLivrosFisicos() {
+        console.log(`\n--- Lista de Livros Físicos da "${this.nome}" ---`);
+        if (this.livrosFisicos.length === 0) {
+            console.log("Nenhum livro físico no acervo.");
+            return;
         }
+        this.livrosFisicos.forEach(livro => {
+            livro.exibirInformacoes(); 
+            console.log(); 
+        });
     }
 
-    listarEBooks(){
-        console.log(`Lista de e-books:`)
-        for(let i=0; i<this.ebooks.length; i++){
-            console.log(`${this.ebooks[i].exibirInformacoes}\n\n`)
+    listarEBooks() {
+        console.log(`\n--- Lista de E-Books da "${this.nome}" ---`);
+        if (this.ebooks.length === 0) {
+            console.log("Nenhum e-book no acervo.");
+            return;
         }
+        this.ebooks.forEach(ebook => {
+            ebook.exibirInformacoes(); 
+            console.log(); 
+        });
     }
 
     adicionarLivroFisico(titulo: string, ano: number, isbn: string, preco: number, autor: Autor, editora: Editora, estoque: number): void{
-        this.livrosFisicos.push(new LivroFisico(titulo, ano, isbn, preco, autor, editora, estoque));
+        let livro = new LivroFisico(titulo, ano, isbn, preco, autor, editora, estoque);
+        this.livrosFisicos.push(livro);
     }
     adicionarEBook(titulo: string, ano: number, isbn: string, preco: number, autor: Autor, editora: Editora, estoque: number, tamanho: number): void{
-        this.ebooks.push(new EBook(titulo, ano, isbn, preco, autor, editora, estoque, tamanho))
+        let livro = new EBook(titulo, ano, isbn, preco, autor, editora, estoque, tamanho);
+        this.ebooks.push(livro);
     }
-    venderLivroFisico(nomeLivro: string): void{
+    venderLivroFisico(isbn: string): void{
         for(let i = 0; i<this.livrosFisicos.length; i++){
             if(this.livrosFisicos[i].estoque > 0){
-                if(this.livrosFisicos[i].titulo.toLowerCase() == nomeLivro.toLowerCase()){
+                if(this.livrosFisicos[i].isbn == isbn){
                     this.livrosFisicos[i].estoque -= 1;
                     console.log(`O livro ${this.livrosFisicos[i].titulo} foi vendido!`);
                 }
             }
         }
     }
-    venderEBook(nomeLivro: string): void{
+    venderEBook(isbn: string): void{
         for(let i = 0; i<this.ebooks.length; i++){
             if(this.ebooks[i].estoque > 0){
-                if(this.ebooks[i].titulo.toLowerCase() == nomeLivro.toLowerCase()){
+                if(this.ebooks[i].isbn == isbn){
                     this.ebooks[i].estoque -= 1;
                     console.log(`O e-book ${this.ebooks[i].titulo} foi vendido!`);
                 }
             }
         }
     }
-    excluirLivroFisico(nomeLivro: string): void{
+    excluirLivroFisico(isbn: string): void{
         for(let i = 0; i<this.livrosFisicos.length; i++){
-            if(this.livrosFisicos[i].titulo.toLowerCase() == nomeLivro.toLowerCase()){
-                this.livrosFisicos.splice(i,1);
+            if(this.livrosFisicos[i].isbn == isbn){
                 console.log(`O livro ${this.livrosFisicos[i].titulo} foi excluído.`)
+                this.livrosFisicos.splice(i,1);
+                break;
             }
         }
     }
-    excluirEBook(nomeLivro: string): void{
+    excluirEBook(isbn: string): void{
         for(let i = 0; i<this.ebooks.length; i++){
-            if(this.ebooks[i].titulo.toLowerCase() == nomeLivro.toLowerCase()){
-                this.ebooks.splice(i,1);
+            if(this.ebooks[i].isbn == isbn){
                 console.log(`O e-book ${this.ebooks[i].titulo} foi excluído.`)
+                this.ebooks.splice(i,1);
+                break;
             }
         }
     }
@@ -214,9 +225,6 @@ let editorarocco = new Editora("Editora Rocco", "42.444.703/0001-59", "(82)99988
 let jkrowling = new Autor("J. K. Rowling", 89, "875.789.234-90", "Masculino");
 let davidgoggins = new Autor("David Goggins", 50, "123.456.789-01", "Masculino");
 let isaquebarbosa = new Autor("Isaque Barbosa Alves", 33, "032.432.423-54", "Masculino")
-let harrypotter = new LivroFisico("Harry Potter", 2001, "234234234-123", 39.90, jkrowling, companhiaDasLetras, 5);
-let livroIsaque = new LivroFisico("A história da matemática", 2040, "2384938243-234", 2.99, isaquebarbosa, companhiaDasLetras, 3);
-let nadapodemeferir = new EBook("Nada pode me ferir",2018, "456456456-456", 10.90, davidgoggins, editorarocco, 2, 256);
 let livraria1 = new Livraria("Livraria da Esquina");
 
 livraria1.adicionarLivroFisico("Harry Potter", 2001, "234234234-123", 39.90, jkrowling, companhiaDasLetras, 5);
@@ -226,7 +234,7 @@ livraria1.adicionarLivroFisico("A história da matemática 2", 2040, "2384938243
 livraria1.adicionarEBook("Nada pode me ferir",2018, "456456456-456", 10.90, davidgoggins, editorarocco, 2, 256);
 livraria1.listarLivrosFisicos();
 livraria1.listarEBooks();
-livraria1.venderLivroFisico("Harry Potter");
+livraria1.venderLivroFisico("234234234-123");
 livraria1.listarLivrosFisicos();
-livraria1.excluirLivroFisico("A história da matemática 2");
+livraria1.excluirLivroFisico("2384938243-224");
 livraria1.listarLivrosFisicos();

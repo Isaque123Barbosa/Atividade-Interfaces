@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es2020",         // Compila para uma versão moderna e compatível do JS
+    "module": "commonjs",      // Define o sistema de módulos que o Node.js usa
+    "outDir": "./dist",        // << MUITO IMPORTANTE: Coloca os arquivos JS em uma pasta separada
+    "strict": true,            // Habilita várias checagens de segurança no código
+    "esModuleInterop": true
+  },
+  "include": [
+    "*.ts"                     // << MUITO IMPORTANTE: Diz para compilar todos os arquivos .ts na pasta
+  ]
+}
